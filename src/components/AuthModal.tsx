@@ -1,7 +1,15 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Chrome, User as UserIcon } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { auth } from '../lib/firebase';
+import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    OAuthProvider,
+    signInWithPopup,
+    updateProfile 
+} from 'firebase/auth';
 
 interface AuthModalProps {
     isOpen: boolean;
@@ -9,35 +17,54 @@ interface AuthModalProps {
 }
 
 export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
-    const { login } = useAuth();
     const [mode, setMode] = useState<'login' | 'signup' | 'verify'>('login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleGoogleLogin = () => {
-        login({ id: Date.now().toString(), username: 'GoogleUser', email: 'google@example.com' });
-        onClose();
+    const handleGoogleLogin = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+            await signInWithPopup(auth, provider);
+            onClose();
+        } catch (error) {
+            console.error("Google login error:", error);
+            alert("Google login error: " + (error as any).message);
+        }
     };
 
-    const handleMicrosoftLogin = () => {
-        login({ id: Date.now().toString(), username: 'MicrosoftUser', email: 'ms@example.com' });
-        onClose();
+    const handleMicrosoftLogin = async () => {
+        try {
+            const provider = new OAuthProvider('microsoft.com');
+            await signInWithPopup(auth, provider);
+            onClose();
+        } catch (error) {
+            console.error("Microsoft login error:", error);
+            alert("Microsoft login error: " + (error as any).message);
+        }
     };
 
-    const handleEmailSubmit = (e: React.FormEvent) => {
+    const handleEmailSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (mode === 'signup') {
-            setMode('verify');
-        } else if (mode === 'verify') {
-            // Mock verification success
-            login({ id: Date.now().toString(), username: username || email.split('@')[0], email });
-            onClose();
-        } else {
-            // Mock login
-            login({ id: Date.now().toString(), username: email.split('@')[0], email });
-            onClose();
+        setIsLoading(true);
+        try {
+            if (mode === 'signup') {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                if (username) {
+                    await updateProfile(userCredential.user, { displayName: username });
+                }
+                onClose();
+            } else {
+                await signInWithEmailAndPassword(auth, email, password);
+                onClose();
+            }
+        } catch (error) {
+            console.error("Email authentication error:", error);
+            alert("Authentication error: " + (error as any).message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -171,9 +198,10 @@ export const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
                                 <button
                                     type="submit"
-                                    className="w-full py-3 bg-aurora-teal/20 text-aurora-teal font-semibold rounded-xl hover:bg-aurora-teal/30 transition-colors border border-aurora-teal/50"
+                                    disabled={isLoading}
+                                    className="w-full py-3 bg-aurora-teal/20 text-aurora-teal font-semibold rounded-xl hover:bg-aurora-teal/30 transition-colors border border-aurora-teal/50 disabled:opacity-50"
                                 >
-                                    {mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Continue' : 'Verify & Complete'}
+                                    {isLoading ? 'Wait...' : mode === 'login' ? 'Sign In' : mode === 'signup' ? 'Continue' : 'Verify & Complete'}
                                 </button>
                             </form>
 

@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Reply, CornerDownRight, Bell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { sendCommentNotification } from '../services/notificationService';
+import { db } from '../lib/firebase';
+import { collection, addDoc, onSnapshot, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
 
 interface Comment {
     id: string;
@@ -28,6 +30,40 @@ export const CommentableContent: React.FC<CommentableContentProps> = ({ content,
     // In a real app, this would be fetched from a backend
     const [comments, setComments] = useState<Record<string, Record<number, Comment[]>>>({});
     const [newCommentText, setNewCommentText] = useState('');
+
+    useEffect(() => {
+        const q = query(
+            collection(db, 'comments'),
+            where('documentId', '==', documentId),
+            orderBy('timestamp', 'asc')
+        );
+
+        const unsubscribeFirestore = onSnapshot(q, (snapshot) => {
+            const formattedComments: Record<string, Record<number, Comment[]>> = {};
+            formattedComments[documentId] = {};
+
+            snapshot.docs.forEach(docSnap => {
+                const data = docSnap.data();
+                const pIndex = data.paragraphIndex as number;
+                
+                if (!formattedComments[documentId][pIndex]) {
+                    formattedComments[documentId][pIndex] = [];
+                }
+                
+                formattedComments[documentId][pIndex].push({
+                    id: docSnap.id,
+                    text: data.text,
+                    author: data.author,
+                    timestamp: data.timestamp?.toMillis ? data.timestamp.toMillis() : Date.now(),
+                    parentId: data.parentId || null
+                });
+            });
+
+            setComments(formattedComments);
+        });
+
+        return () => unsubscribeFirestore();
+    }, [documentId]);
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [expandedReplies, setExpandedReplies] = useState<string[]>([]);
 
@@ -152,28 +188,23 @@ export const CommentableContent: React.FC<CommentableContentProps> = ({ content,
         e.preventDefault();
         if (!newCommentText.trim() || activeParagraphIndex === null || !isAuthenticated || !user) return;
 
-        const newComment: Comment = {
-            id: Date.now().toString(),
+        const commentData = {
+            documentId,
+            paragraphIndex: activeParagraphIndex,
             text: newCommentText.trim(),
             author: user.username,
-            timestamp: Date.now(),
-            parentId: replyingTo,
+            authorId: user.id,
+            timestamp: serverTimestamp(),
+            parentId: replyingTo || null
         };
 
-        setComments(prev => {
-            const docComments = prev[documentId] || {};
-            const pComments = docComments[activeParagraphIndex] || [];
-            return {
-                ...prev,
-                [documentId]: {
-                    ...docComments,
-                    [activeParagraphIndex]: [...pComments, newComment]
-                }
-            };
-        });
-
-        // Fire off simulated notification
-        await sendCommentNotification(user.username, newComment.text);
+        try {
+            await addDoc(collection(db, 'comments'), commentData);
+            // Fire off simulated notification
+            await sendCommentNotification(user.username, newCommentText.trim());
+        } catch (error) {
+            console.error("Error adding comment: ", error);
+        }
 
         setNewCommentText('');
         setReplyingTo(null);
