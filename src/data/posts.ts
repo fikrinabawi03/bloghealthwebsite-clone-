@@ -18,6 +18,7 @@ export interface Subchapter {
     id: string;
     title: string;
     content: string; // HTML or Markdown string for the actual reading material
+    subchapters?: Subchapter[];
 }
 
 export interface ArticleChapter {
@@ -83,7 +84,19 @@ export const blogPosts: BlogPost[] = [
                            </p>
                            <br>
                            <p className="mb-6">Dari hipotesis-hipotesis di atas, apakah ada yang relate juga? atau mau ada tambahan hipotesis lainnya? tulis aja di kolom komentar yaa.. 💖</p>
-                           `
+                           `,
+                        subchapters: [
+                            {
+                                id: 'intro-sub-1',
+                                title: 'Latar Belakang',
+                                content: '<p>Detail latar belakang mengenai prevalensi TB di Indonesia.</p>'
+                            },
+                            {
+                                id: 'intro-sub-2',
+                                title: 'Tujuan & Hipotesis',
+                                content: '<p>Penjelasan lebih lanjut dari hipotesis mengenai pengobatan OAT.</p>'
+                            }
+                        ]
                     }
                 ]
             },
@@ -94,7 +107,19 @@ export const blogPosts: BlogPost[] = [
                     {
                         id: 'tb-intro',
                         title: 'Pendahuluan',
-                        content: ``
+                        content: ``,
+                        subchapters: [
+                            {
+                                id: 'tb-sub-1',
+                                title: 'Pengenalan Tuberkulosis',
+                                content: '<p>Teks pendahuluan mengenai apa itu Tuberkulosis dan bagaimana penyebarannya.</p>'
+                            },
+                            {
+                                id: 'tb-sub-2',
+                                title: 'Sejarah Penemuan',
+                                content: '<p>Sejarah awal penemuan bakteri penyebab Tuberkulosis.</p>'
+                            }
+                        ]
                     }
                 ]
             }

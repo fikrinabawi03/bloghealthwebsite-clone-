@@ -161,6 +161,47 @@ export const ArticlePage = () => {
                                                         <ChevronRight className={`w-5 h-5 transition-all ${activeId === sub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
                                                     </div>
                                                 </Link>
+
+                                                {/* Nested Subchapters */}
+                                                {sub.subchapters && sub.subchapters.length > 0 && (
+                                                    <div className="grid grid-cols-1 gap-3 mt-4 ml-8 border-l-2 border-white/5 pl-6 relative">
+                                                        {sub.subchapters.map((subsub, j) => (
+                                                            <div
+                                                                key={subsub.id}
+                                                                className="relative"
+                                                                onMouseEnter={(e) => { e.stopPropagation(); setActiveId(subsub.id); }}
+                                                                onMouseLeave={(e) => { e.stopPropagation(); setActiveId(sub.id); }}
+                                                                onClick={(e) => { e.stopPropagation(); setActiveId(subsub.id); }}
+                                                            >
+                                                                {activeId === subsub.id && (
+                                                                    <motion.div
+                                                                        layoutId="active-indicator"
+                                                                        className={`absolute -left-[29px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-aurora-${post.color} shadow-[0_0_10px_currentColor] z-10`}
+                                                                        initial={false}
+                                                                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                                                                    />
+                                                                )}
+                                                                <Link
+                                                                    to={`/article/${post.id}/read/${subsub.id}`}
+                                                                    className={`group relative bg-white/5 rounded-xl p-4 transition-all duration-300 overflow-hidden block border shadow-sm ${activeId === subsub.id ? `bg-white/10 border-aurora-${post.color} shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-[1.01]` : 'border-white/5 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.01]'}`}
+                                                                >
+                                                                    <div className={`absolute inset-0 bg-gradient-to-r from-aurora-${post.color}/5 to-transparent opacity-0 transition-opacity duration-500 ${activeId === subsub.id ? 'opacity-100' : 'group-hover:opacity-100'}`} />
+                                                                    <div className="flex items-center justify-between relative z-10">
+                                                                        <div className="flex items-center gap-3">
+                                                                            <div className={`w-6 h-6 rounded-full bg-black/50 border flex items-center justify-center transition-colors ${activeId === subsub.id ? `border-aurora-${post.color} text-aurora-${post.color}` : `border-white/10 text-white/50 group-hover:text-aurora-${post.color}`}`}>
+                                                                                <span className="text-[10px] font-bold">{i + 1}.{j + 1}</span>
+                                                                            </div>
+                                                                            <span className={`text-base font-medium transition-colors ${activeId === subsub.id ? 'text-white' : 'text-white/70 group-hover:text-white'}`}>
+                                                                                {subsub.title}
+                                                                            </span>
+                                                                        </div>
+                                                                        <ChevronRight className={`w-4 h-4 transition-all ${activeId === subsub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
+                                                                    </div>
+                                                                </Link>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
