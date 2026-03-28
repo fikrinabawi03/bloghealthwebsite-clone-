@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { AboutPage } from './pages/AboutPage';
 import { ArticlePage } from './pages/ArticlePage';
 import { SubchapterPage } from './pages/SubchapterPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { ScrollToTop } from './components/ScrollToTop';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/article/:id" element={<ArticlePage />} />
                         <Route path="/article/:id/read/:subId" element={<SubchapterPage />} />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </div>
             </div>
