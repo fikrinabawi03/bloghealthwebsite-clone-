@@ -144,7 +144,8 @@ export const ArticlePage = () => {
                                                     />
                                                 )}
 
-                                                <div
+                                                <Link
+                                                    to={`/article/${post.id}/read/${sub.id}`}
                                                     className={`group relative bg-white/5 rounded-2xl p-6 transition-all duration-300 overflow-hidden block border shadow-lg cursor-pointer ${activeId === sub.id ? `bg-white/10 border-aurora-${post.color} shadow-[0_0_30px_rgba(255,255,255,0.4)] scale-[1.02]` : 'border-white/10 hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-[1.02]'}`}
                                                 >
                                                     <div className={`absolute inset-0 bg-gradient-to-r from-aurora-${post.color}/10 to-transparent opacity-0 transition-opacity duration-500 ${activeId === sub.id ? 'opacity-100' : 'group-hover:opacity-100'}`} />
@@ -159,7 +160,7 @@ export const ArticlePage = () => {
                                                         </div>
                                                         <ChevronRight className={`w-5 h-5 transition-all ${activeId === sub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
                                                     </div>
-                                                </div>
+                                                </Link>
 
                                                 {/* Nested Subchapters */}
                                                 {sub.subchapters && sub.subchapters.length > 0 && (
@@ -180,7 +181,9 @@ export const ArticlePage = () => {
                                                                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                                                                     />
                                                                 )}
-                                                                <div
+                                                                <Link
+                                                                    to={`/article/${post.id}/read/${subsub.id}`}
+                                                                    onClick={(e) => e.stopPropagation()}
                                                                     className={`group relative bg-white/5 rounded-xl p-4 transition-all duration-300 overflow-hidden block border shadow-sm cursor-pointer ${activeId === subsub.id ? `bg-white/10 border-aurora-${post.color} shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-[1.01]` : 'border-white/5 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.01]'}`}
                                                                 >
                                                                     <div className={`absolute inset-0 bg-gradient-to-r from-aurora-${post.color}/5 to-transparent opacity-0 transition-opacity duration-500 ${activeId === subsub.id ? 'opacity-100' : 'group-hover:opacity-100'}`} />
@@ -195,7 +198,7 @@ export const ArticlePage = () => {
                                                                         </div>
                                                                         <ChevronRight className={`w-4 h-4 transition-all ${activeId === subsub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
                                                                     </div>
-                                                                </div>
+                                                                </Link>
                                                             </div>
                                                         ))}
                                                     </div>

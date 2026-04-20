@@ -15,10 +15,23 @@ export const SubchapterPage = () => {
 
     if (post?.articleChapters) {
         for (const chapter of post.articleChapters) {
-            const sub = chapter.subchapters.find(s => s.id === subId);
-            if (sub) {
+            let foundSub = chapter.subchapters.find(s => s.id === subId);
+            
+            if (!foundSub) {
+                for (const sub of chapter.subchapters) {
+                    if (sub.subchapters) {
+                        const nestedSub = sub.subchapters.find(s => s.id === subId);
+                        if (nestedSub) {
+                            foundSub = nestedSub;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (foundSub) {
                 currentChapter = chapter;
-                currentSubchapter = sub;
+                currentSubchapter = foundSub;
                 break;
             }
         }
