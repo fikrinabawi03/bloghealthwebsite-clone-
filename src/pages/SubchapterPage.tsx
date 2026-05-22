@@ -4,6 +4,7 @@ import { ArrowLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { blogPosts, ArticleChapter, Subchapter } from '../data/posts';
 import { NoiseOverlay } from '../components/NoiseOverlay';
 import { CommentableContent } from '../components/CommentableContent';
+import { InteractiveReader } from '../components/InteractiveReader';
 
 export const SubchapterPage = () => {
     const { id, subId } = useParams();
@@ -120,7 +121,11 @@ export const SubchapterPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    <CommentableContent content={currentSubchapter.content} documentId={`${post.id}-${currentSubchapter.id}`} isSubchapter />
+                    {post.id === 4 ? (
+                        <InteractiveReader content={currentSubchapter.content} />
+                    ) : (
+                        <CommentableContent content={currentSubchapter.content} documentId={`${post.id}-${currentSubchapter.id}`} isSubchapter />
+                    )}
                 </motion.div>
 
                 {/* Bottom Navigation */}

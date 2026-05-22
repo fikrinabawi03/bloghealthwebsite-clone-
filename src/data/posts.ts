@@ -45,6 +45,50 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
     {
+        id: 4,
+        type: 'structured',
+        category: '',
+        title: 'Opening',
+        author: 'Muhammad Fikri Nabawi',
+        date: 'May 22, 2026',
+        description: 'Pada bagian ini, isi artikel dibuat untuk berbagi sedikit cerita dan pengalaman, sama alasan mengapa aku membuat blog ini.',
+        imageAlt: 'Ilustrasi pembukaan blog',
+        color: 'blue',
+        content: '',
+        articleChapters: [
+            {
+                id: 'chapter-1',
+                title: 'Bagian 1',
+                subchapters: [
+                    {
+                        id: 'pengalaman',
+                        title: 'Pengalaman & Alasan',
+                        content: `
+                            <p className="mb-6">Pada pembukaan kali ini, izinkan aku berbagi sedikit cerita dan pengalaman, serta menjelaskan alasan mengapa aku ingin membuat blog ini. Pada intinya, aku hanya ingin menyampaikan bahwa prospek farmasi itu sebenarnya sangat luas, teman-teman. Ya, meskipun aku telah mengambil banyak belokan di sepanjang karirku di bidang farmasi, tujuanku tetap sama: aku benar-benar berada di jalur farmasi. Nah, aku harap setelah membaca pembukaan ini, dapat membantu dan menyemangati kalian yang sedang belajar farmasi.</p>
+                            <br>
+                            <p className="mb-6">Pertama, sesuai dengan tema dan mungkin slogan yang telah ditetapkan untuk blog ini: menjelajahi dan mengungkap dunia kesehatan melalui dunia atom. Aku memilih tema ini bukan hanya karena aku memiliki latar belakang di bidang farmasi, tetapi juga karena aku sangat menyukai fisika kuantum, atau, pada dasarnya, apa pun yang membahas tentang atom. Kedengarannya sedikit tidak nyambung, bukan? Farmasi tapi suka fisika kuantum?</p>
+                        `
+                    }
+                ]
+            },
+            {
+                id: 'chapter-2',
+                title: 'Bagian 2',
+                subchapters: [
+                    {
+                        id: 'fisika-kuantum',
+                        title: 'Fisika Kuantum & Tantangan',
+                        content: `
+                            <p className="mb-6">Singkat cerita, semuanya berawal ketika aku masih di sekolah menengah atas (SMA). Saat itu, aku sangat menyukai matematika dan fisika, termasuk fisika kuantum atau mekanika kuantum. Sepanjang SMA, aku menghabiskan hari-hariku membaca huruf, angka, dan simbol matematika dari fisika, termasuk fisika kuantum. Bagian yang paling lucu adalah, ketika aku sedang bersedih memikirkan prospek masuk universitas, membaca matematika atau membaca rumus-rumus matematika dalam fisika kuantum menjadi cara untuk melarikan diri saat aku merasa sedih, haha. 😂. Aku tidak hanya sekadar membaca buku; aku juga mendapatkan pencerahan tentang fisika kuantum melalui film-film seperti "The Theory of Everything" atau dari kuliah online, biasanya di YouTube, yang membahas fisika kuantum.</p>
+                            <br>
+                            <p className="mb-6">Mengapa aku menyukai fisika kuantum atau mekanika kuantum, bukan hanya sekadar karena aku menyukainya (oops...😄)? Sebenarnya, salah satu alasannya adalah karena aku menyukai tantangan, terutama karena dunia kuantum penuh dengan ketidakpastian. Yah... meskipun dunia kuantum penuh dengan ketidakpastian, aku sangat menyukai pernyataan Albert Einstein bahwa Tuhan tidak sedang bermain dadu seperti di video ini. Dan prinsip Einstein tersebut juga menginspirasiku dalam menjalani kehidupan. Lanjut ke bab berikutnya, teman-teman. 😉✨.</p>
+                        `
+                    }
+                ]
+            }
+        ]
+    },
+    {
         id: 1,
         type: 'structured',
         category: 'Tuberkulosis',
