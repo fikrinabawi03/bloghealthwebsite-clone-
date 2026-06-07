@@ -13,27 +13,27 @@ export const SubchapterPage = () => {
     // Find the specific subchapter
     let currentChapter: ArticleChapter | undefined;
     let currentSubchapter: Subchapter | undefined;
+    let nextSubchapter: Subchapter | undefined;
 
     if (post?.articleChapters) {
+        const flattenedList: { chapter: ArticleChapter, sub: Subchapter }[] = [];
         for (const chapter of post.articleChapters) {
-            let foundSub = chapter.subchapters.find(s => s.id === subId);
-            
-            if (!foundSub) {
-                for (const sub of chapter.subchapters) {
-                    if (sub.subchapters) {
-                        const nestedSub = sub.subchapters.find(s => s.id === subId);
-                        if (nestedSub) {
-                            foundSub = nestedSub;
-                            break;
-                        }
+            for (const sub of chapter.subchapters) {
+                flattenedList.push({ chapter, sub });
+                if (sub.subchapters) {
+                    for (const subsub of sub.subchapters) {
+                        flattenedList.push({ chapter, sub: subsub });
                     }
                 }
             }
+        }
 
-            if (foundSub) {
-                currentChapter = chapter;
-                currentSubchapter = foundSub;
-                break;
+        const currentIndex = flattenedList.findIndex(item => item.sub.id === subId);
+        if (currentIndex !== -1) {
+            currentChapter = flattenedList[currentIndex].chapter;
+            currentSubchapter = flattenedList[currentIndex].sub;
+            if (currentIndex < flattenedList.length - 1) {
+                nextSubchapter = flattenedList[currentIndex + 1].sub;
             }
         }
     }
@@ -133,7 +133,7 @@ export const SubchapterPage = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
-                    className="mt-24 pt-12 border-t border-white/10 flex justify-center"
+                    className="mt-24 pt-12 border-t border-white/10 flex flex-wrap justify-center gap-4"
                 >
                     <Link
                         to={`/article/${post.id}`}
@@ -142,6 +142,15 @@ export const SubchapterPage = () => {
                         <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                         <span className="text-sm font-medium tracking-widest uppercase">Return to Index</span>
                     </Link>
+                    {nextSubchapter && (
+                        <Link
+                            to={`/article/${post.id}/read/${nextSubchapter.id}`}
+                            className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group"
+                        >
+                            <span className="text-sm font-medium tracking-widest uppercase">Go to Next Chapter</span>
+                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    )}
                 </motion.div>
             </article>
         </div>

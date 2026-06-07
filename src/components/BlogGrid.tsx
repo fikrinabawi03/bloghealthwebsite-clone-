@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { blogPosts } from '../data/posts';
+import { ScrollReveal } from './ScrollReveal';
 
 export const BlogGrid = () => {
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -17,7 +18,8 @@ export const BlogGrid = () => {
 
     return (
         <section ref={sectionRef} className="py-24 md:py-32 px-6 relative z-10" id="articles">
-            <div className="max-w-7xl mx-auto bg-black/50 backdrop-blur-md border border-white/5 rounded-[17px] shadow-[0_0_40px_rgba(255,255,255,0.50)] p-8 md:p-12 min-h-[500px] flex flex-col justify-center transition-all duration-700">
+            <ScrollReveal direction="up" delay={0.2}>
+                <div className="max-w-7xl mx-auto bg-black/50 backdrop-blur-md border border-white/5 rounded-[17px] shadow-[0_0_40px_rgba(255,255,255,0.50)] p-8 md:p-12 min-h-[500px] flex flex-col justify-center transition-all duration-700">
                 <motion.div
                     layout
                     className={`w-full flex ${activeIndex === null ? 'flex-col items-center' : 'flex-col md:flex-row gap-12 lg:gap-20'}`}
@@ -107,7 +109,8 @@ export const BlogGrid = () => {
                         )}
                     </AnimatePresence>
                 </motion.div>
-            </div>
+                </div>
+            </ScrollReveal>
         </section>
     );
 };
