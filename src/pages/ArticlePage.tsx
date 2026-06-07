@@ -1,17 +1,21 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Lock } from 'lucide-react';
 import { blogPosts } from '../data/posts';
 import { NoiseOverlay } from '../components/NoiseOverlay';
 import { ComicArticle } from '../components/ComicArticle';
 import { CommentableContent } from '../components/CommentableContent';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { AuthModal } from '../components/AuthModal';
 
 export const ArticlePage = () => {
     const { id } = useParams();
     const post = blogPosts.find(p => p.id === Number(id));
 
     const [activeId, setActiveId] = useState<string | null>(null);
+    const { isAuthenticated } = useAuth();
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
     useEffect(() => {
         if (post?.type === 'structured' && post.articleChapters?.[0]) {
@@ -146,6 +150,12 @@ export const ArticlePage = () => {
 
                                                 <Link
                                                     to={`/article/${post.id}/read/${sub.id}`}
+                                                    onClick={(e) => {
+                                                        if (post.id === 1 && !isAuthenticated) {
+                                                            e.preventDefault();
+                                                            setIsAuthModalOpen(true);
+                                                        }
+                                                    }}
                                                     className={`group relative bg-white/5 rounded-2xl p-6 transition-all duration-300 overflow-hidden block border shadow-lg cursor-pointer ${activeId === sub.id ? `bg-white/10 border-aurora-${post.color} shadow-[0_0_30px_rgba(255,255,255,0.4)] scale-[1.02]` : 'border-white/10 hover:bg-white/10 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-[1.02]'}`}
                                                 >
                                                     <div className={`absolute inset-0 bg-gradient-to-r from-aurora-${post.color}/10 to-transparent opacity-0 transition-opacity duration-500 ${activeId === sub.id ? 'opacity-100' : 'group-hover:opacity-100'}`} />
@@ -158,7 +168,11 @@ export const ArticlePage = () => {
                                                                 {sub.title}
                                                             </span>
                                                         </div>
-                                                        <ChevronRight className={`w-5 h-5 transition-all ${activeId === sub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
+                                                        {post.id === 1 && !isAuthenticated ? (
+                                                            <Lock className={`w-5 h-5 transition-all text-white/30 group-hover:text-aurora-${post.color}`} />
+                                                        ) : (
+                                                            <ChevronRight className={`w-5 h-5 transition-all ${activeId === sub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
+                                                        )}
                                                     </div>
                                                 </Link>
 
@@ -183,7 +197,13 @@ export const ArticlePage = () => {
                                                                 )}
                                                                 <Link
                                                                     to={`/article/${post.id}/read/${subsub.id}`}
-                                                                    onClick={(e) => e.stopPropagation()}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        if (post.id === 1 && !isAuthenticated) {
+                                                                            e.preventDefault();
+                                                                            setIsAuthModalOpen(true);
+                                                                        }
+                                                                    }}
                                                                     className={`group relative bg-white/5 rounded-xl p-4 transition-all duration-300 overflow-hidden block border shadow-sm cursor-pointer ${activeId === subsub.id ? `bg-white/10 border-aurora-${post.color} shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-[1.01]` : 'border-white/5 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-[1.01]'}`}
                                                                 >
                                                                     <div className={`absolute inset-0 bg-gradient-to-r from-aurora-${post.color}/5 to-transparent opacity-0 transition-opacity duration-500 ${activeId === subsub.id ? 'opacity-100' : 'group-hover:opacity-100'}`} />
@@ -196,7 +216,11 @@ export const ArticlePage = () => {
                                                                                 {subsub.title}
                                                                             </span>
                                                                         </div>
-                                                                        <ChevronRight className={`w-4 h-4 transition-all ${activeId === subsub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
+                                                                        {post.id === 1 && !isAuthenticated ? (
+                                                                            <Lock className={`w-4 h-4 transition-all text-white/30 group-hover:text-aurora-${post.color}`} />
+                                                                        ) : (
+                                                                            <ChevronRight className={`w-4 h-4 transition-all ${activeId === subsub.id ? `text-aurora-${post.color} translate-x-1` : `text-white/30 group-hover:text-aurora-${post.color} group-hover:translate-x-1`}`} />
+                                                                        )}
                                                                     </div>
                                                                 </Link>
                                                             </div>
@@ -238,6 +262,7 @@ export const ArticlePage = () => {
                     </>
                 )}
             </article>
+            <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
         </div>
     );
 };
